@@ -5,6 +5,7 @@ var Schema = mongoose.Schema;
 var PlayerSchema = new Schema({
   name: { type: String, require: true, max: 100 },
   won: { type: Number, require: true, min: 0 },
+  move: [{ type: Schema.Types.ObjectId, ref: 'Move' }]
 });
 
 PlayerSchema.virtual('url').get(function () {

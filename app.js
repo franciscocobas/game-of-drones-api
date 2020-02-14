@@ -13,7 +13,7 @@ var app = express();
 
 // Connect database
 var mongoDB = process.env.DATABASE_URI;
-mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false });
 
 var db = mongoose.connection;
 db.on('error', console.log.bind(console, 'MongoDB connection error: '));

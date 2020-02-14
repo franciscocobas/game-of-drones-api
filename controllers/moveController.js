@@ -1,7 +1,12 @@
 var Move = require('../models/move');
 
 exports.move_list = function (req, res) {
-  res.send('NOT Implemented');
+  Move.find({}, 'move kills players')
+    .populate('players')
+    .exec(function (err, move_list) {
+      if (err) { return next(err); }
+      res.json({ move_list: move_list })
+    })
 };
 
 exports.move_detail = function (req, res) {
