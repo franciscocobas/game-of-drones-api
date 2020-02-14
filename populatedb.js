@@ -25,12 +25,12 @@ db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 var players = []
 var moves = []
 
-function moveCreate(move, kills, cb) {
+function moveCreate(move, kills, players, cb) {
   movedetail = {
     move: move,
     kills: kills
   }
-  // if (players != false) movedetail.players = players;
+  if (players != false) movedetail.player = players;
   
   var move = new Move(movedetail);
   
@@ -38,15 +38,13 @@ function moveCreate(move, kills, cb) {
     if (err) {
       db(err, null);
     }
-    console.log('New Move: ' + move);
     moves.push(move);
     cb(null, move);
   })
 }
 
-function playerCreate(name, won, move, cb) {
+function playerCreate(name, won, cb) {
   playerdetail = { name: name, won: won }
-  if (move != false) playerdetail.move = move;
 
   var player = new Player(playerdetail);
 
@@ -64,32 +62,32 @@ function playerCreate(name, won, move, cb) {
 function createMoves(cb) {
   async.parallel([
     function (callback) {
-      moveCreate('paper', 'rock', callback);
+      moveCreate('paper', 'rock', false, callback);
     },
     function (callback) {
-      moveCreate('rock', 'scissors', callback);
+      moveCreate('rock', 'scissors', false, callback);
     },
     function (callback) {
-      moveCreate('scissors', 'paper', callback);
+      moveCreate('scissors', 'paper', false, callback);
     },
     function (callback) {
-      moveCreate('string', 'dog', callback);
+      moveCreate('string', 'dog', [players[0],], callback);
     },
     function (callback) {
-      moveCreate('dog', 'paper', callback);
+      moveCreate('dog', 'paper', [players[1],], callback);
     },
   ], cb)
 }
 function createPlayers(cb) {
   async.series([
     function (callback) {
-      playerCreate('Francisco', 0, [moves[0], moves[0],], callback)
+      playerCreate('Francisco', 0, callback)
     },
     function (callback) {
-      playerCreate('Pepe', 0, false, callback)
+      playerCreate('Pepe', 0, callback)
     },
     function (callback) {
-      playerCreate('Maria', 0, false, callback)
+      playerCreate('Maria', 0, callback)
     },
   ], cb)
 }
@@ -97,7 +95,7 @@ function createPlayers(cb) {
 
 async.series([
   createPlayers,
-  createMoves
+  createMoves,
 ],
   // Optional callback
   function (err, results) {

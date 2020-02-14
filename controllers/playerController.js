@@ -19,7 +19,7 @@ exports.index = function (req, res) {
 };
 
 exports.player_list = function (req, res) {
-  Player.find({}, 'name won')
+  Player.find({})
     .exec(function (err, player_list) {
       if (err) { return next(err); }
       res.json({ player_list: player_list })
@@ -32,6 +32,9 @@ exports.player_detail = function (req, res) {
       Player.findById(req.params.id)
         .populate('move')
         .exec(callback)
+    },
+    player_moves: function(callback) {
+      Move.find({'player': req.params.id}).exec(callback)
     }
   }, function (err, results) {
     if (err) { return next(err); }
@@ -40,15 +43,12 @@ exports.player_detail = function (req, res) {
       err.status = 404;
       return next(err);
     }
-    res.json({ player: results.player })
+    res.json({ player: results.player, player_moves: results.player_moves })
   })
 };
 
 exports.player_create_post = [
   (req, res, next) => {
-    if (!(req.body.move instanceof Array)) {
-      req.body.move = typeof req.body.move === 'undefined' ? [] : new Array(req.body.move)
-    }
     if (req.body.won !== undefined) {
       let won = parseInt(req.body.won);
       req.body.won = isNaN(won) ? undefined : won;
@@ -136,16 +136,16 @@ exports.player_update_post = [
       }, function (err, results) {
         if (err) { return next(err); }
 
-        for (let i = 0; i < results.moves.lenght; i++) {
-          if (player.move.indexOf(results.moves[i]._id) > -1) {
-            results.moves[i].checked = 'true';
-          }
-        }
         res.json({ result: 'error', errors: errors, moves: results.moves, player: player })
       })
     } else {
       Player.findById(req.params.id, function(err, player) {
         if (err) { return next(err); }
+        if (player == null) {
+          var err = new Error('Player not found');
+          err.status = 404;
+          return next(err);
+        }
 
         player.name = req.body.name ? req.body.name : player.name;
         player.won = req.body.won ? req.body.won : player.won;
@@ -153,8 +153,8 @@ exports.player_update_post = [
 
         Player.findByIdAndUpdate(req.params.id, player, {}, function (err, p) {
           if (err) { return next(err); }
+          res.json({ result: 'ok', url: player.url })
         })
-        res.json({ result: 'ok', url: player.url })
       })
 
     }
