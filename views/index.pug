@@ -1,5 +1,17 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+  h3 Welcome to #{title} 
+  p(class='desc') 
+    | This RESTful API is part of the UruIT Fullstack Exam. For more information please visit 
+    a(href='https://github.com/franciscocobas/game-of-drones-api', target='_blank') Game of Drones
+    |  Github Repository
+  if error
+    div(class='error')
+      p There was an error fetching the data. Please try again later.
+  else
+    div(class='info')
+      h5 The database has the following information:
+      ul
+        li #[strong Players:] !{data.player_count}
+        li #[strong Moves:] !{data.move_count}
