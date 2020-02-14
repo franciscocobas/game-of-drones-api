@@ -9,8 +9,8 @@ router.get('/', player_controller.index);
 router.get('/players', player_controller.player_list);
 router.get('/player/:id', player_controller.player_detail);
 router.post('/player/create', player_controller.player_create_post);
-router.post('/player/:id/delete', player_controller.player_delete);
 router.post('/player/:id/update', player_controller.player_update_post);
+router.delete('/player/:id/delete', player_controller.player_delete);
 
 /// MOVE ROUTES ///
 router.get('/moves', move_controller.move_list);
