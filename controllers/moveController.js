@@ -74,8 +74,11 @@ exports.move_delete_post = function (req, res) {
 
     if (err) { return next(err); }
 
-    Move.findByIdAndDelete(req.body.id, function (err) {
+    Move.findByIdAndDelete(req.params.id, function (err, results) {
       if (err) { return next(err); }
+      if (!results) {
+        res.json({ result: 'error', error: 'No Move with this ID was found' })
+      }
       res.json({ result: 'ok' })
     })
   })
@@ -88,10 +91,10 @@ exports.move_update_post = [
     }
     next();
   },
-  body('move').isLength({ min: 1 }).trim().escape(),
-  body('kills').isLength({ min: 1 }).trim().escape(),
+  body('move').trim().escape(),
+  body('kills').trim().escape(),
   (req, res, next) => {
-    const errors = validationResult();
+    const errors = validationResult(req);
 
     let move = new Move({
       move: req.body.move,
@@ -112,9 +115,9 @@ exports.move_update_post = [
           return next(err);
         }
 
-        move.move = req.body.move ? req.body.move : player.move;
-        move.kills = req.body.kills ? req.body.kills : player.kills;
-        move.player = req.body.players ? req.body.players : player.players;
+        move.move = req.body.move ? req.body.move : move_found.move;
+        move.kills = req.body.kills ? req.body.kills : move_found.kills;
+        move.player = req.body.players ? req.body.players : move_found.player;
 
         Move.findByIdAndUpdate(req.params.id, move, {}, function (err, m) {
 

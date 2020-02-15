@@ -9,7 +9,7 @@ var MoveSchema = new Schema({
 });
 
 MoveSchema.virtual('url').get(function () {
-  return '/catalog/book/' + this._id;
+  return '/api/move/' + this._id;
 });
 
 module.exports = mongoose.model('Move', MoveSchema)

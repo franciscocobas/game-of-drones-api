@@ -33,8 +33,8 @@ exports.player_detail = function (req, res) {
         .populate('move')
         .exec(callback)
     },
-    player_moves: function(callback) {
-      Move.find({'player': req.params.id}).exec(callback)
+    player_moves: function (callback) {
+      Move.find({ 'player': req.params.id }).exec(callback)
     }
   }, function (err, results) {
     if (err) { return next(err); }
@@ -97,8 +97,11 @@ exports.player_delete = function (req, res, next) {
     }
   }, function (err, results) {
     if (err) { return next(err); }
-    Player.findByIdAndRemove(req.params.id, function deletePlayer(err) {
+    Player.findByIdAndRemove(req.params.id, function deletePlayer(err, results) {
       if (err) { return next(err); }
+      if (!results) {
+        res.json({ result: 'error', errors: [{msg: 'No Player with this ID was found'}] })
+      }
       res.json({ result: 'ok' })
     })
   })
@@ -139,7 +142,7 @@ exports.player_update_post = [
         res.json({ result: 'error', errors: errors, moves: results.moves, player: player })
       })
     } else {
-      Player.findById(req.params.id, function(err, player) {
+      Player.findById(req.params.id, function (err, player) {
         if (err) { return next(err); }
         if (player == null) {
           var err = new Error('Player not found');
