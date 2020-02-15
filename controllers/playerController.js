@@ -79,7 +79,7 @@ exports.player_create_post = [
       Player.find({ name: req.body.name }, function (err, p_found) {
         if (err) { return next(err); }
 
-        if (p_found) {
+        if (p_found.length > 0) {
 
           // If Player was found then retreive it
           res.json({ result: 'ok', player: p_found, url: player.url })
@@ -88,7 +88,7 @@ exports.player_create_post = [
           // If Player wasn't found then save it
           player.save(function (err) {
             if (err) { return next(err); }
-            res.json({ result: 'ok', url: player.url })
+            res.json({ result: 'ok', player: [player], url: player.url })
           })
         }
       })
