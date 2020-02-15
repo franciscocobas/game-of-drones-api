@@ -13,7 +13,7 @@ var apiRouter = require('./routes/api');
 var app = express();
 
 // Connect database
-var mongoDB = process.env.DATABASE_URI;
+var mongoDB = process.env.NODE_ENV == 'test' ? process.env.DATABASE_TEST_URI : process.env.DATABASE_URI;
 mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false });
 
 var db = mongoose.connection;

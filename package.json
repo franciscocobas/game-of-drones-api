@@ -5,7 +5,9 @@
   "scripts": {
     "start": "node -r dotenv/config ./bin/www",
     "devstart": "nodemon -r dotenv/config ./bin/www",
-    "serverstart": "DEBUG=game-of-drones-api:* npm run devstart"
+    "serverstart": "DEBUG=game-of-drones-api:* npm run devstart",
+    "loadsampledata": "node -r dotenv/config populatedb",
+    "test": "node -r dotenv/config ./deleteDbTestData && jest --testTimeout=10000 --setupFiles dotenv/config --detectOpenHandles"
   },
   "dependencies": {
     "async": "^3.1.1",
@@ -21,6 +23,14 @@
     "pug": "^2.0.4"
   },
   "devDependencies": {
-    "nodemon": "^2.0.2"
+    "jest": "^25.1.0",
+    "nodemon": "^2.0.2",
+    "supertest": "^4.0.2"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "coveragePathIgnorePatterns": [
+      "/node/modules"
+    ]
   }
 }
