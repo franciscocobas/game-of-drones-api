@@ -16,7 +16,7 @@ var Move = require('./models/move')
 
 
 var mongoose = require('mongoose');
-var mongoDB = process.env.DATABASE_URI;
+var mongoDB = process.env.DATABASE_TEST_URI;
 mongoose.connect(mongoDB, { useNewUrlParser: true });
 mongoose.Promise = global.Promise;
 var db = mongoose.connection;
@@ -31,9 +31,9 @@ function moveCreate(move, kills, players, cb) {
     kills: kills
   }
   if (players != false) movedetail.player = players;
-  
+
   var move = new Move(movedetail);
-  
+
   move.save(function (err) {
     if (err) {
       db(err, null);
@@ -43,8 +43,8 @@ function moveCreate(move, kills, players, cb) {
   })
 }
 
-function playerCreate(name, won, cb) {
-  playerdetail = { name: name, won: won }
+function playerCreate(name, name_lower, won, cb) {
+  playerdetail = { name: name, name_lower: name_lower, won: won }
 
   var player = new Player(playerdetail);
 
@@ -81,13 +81,13 @@ function createMoves(cb) {
 function createPlayers(cb) {
   async.series([
     function (callback) {
-      playerCreate('Francisco', 0, callback)
+      playerCreate('Francisco', 'francisco', 0, callback)
     },
     function (callback) {
-      playerCreate('Pepe', 0, callback)
+      playerCreate('Pepe', 'pepe', 0, callback)
     },
     function (callback) {
-      playerCreate('Maria', 0, callback)
+      playerCreate('Maria', 'maria', 0, callback)
     },
   ], cb)
 }
