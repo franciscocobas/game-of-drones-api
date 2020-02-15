@@ -16,7 +16,7 @@ router.delete('/player/:id/delete', player_controller.player_delete);
 router.get('/moves', move_controller.move_list);
 router.get('/move/:id', move_controller.move_detail);
 router.post('/move/create', move_controller.move_create_post)
-router.post('/move/:id/delete', move_controller.move_delete_post);
 router.post('/move/:id/update', move_controller.move_update_post);
+router.delete('/move/:id/delete', move_controller.move_delete_post);
 
 module.exports = router;
