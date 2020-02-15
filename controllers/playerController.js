@@ -62,8 +62,9 @@ exports.player_create_post = [
 
     let player = new Player({
       name: req.body.name,
+      name_lower: req.body.name.toLowerCase(),
       won: req.body.won,
-      move: req.body.move
+      move: req.body.move,
     })
 
     if (!errors.isEmpty()) {
@@ -76,7 +77,7 @@ exports.player_create_post = [
         res.json({ result: 'error', error: errors, moves: results.moves, player: player })
       })
     } else {
-      Player.find({ name: req.body.name }, function (err, p_found) {
+      Player.find({ name_lower: player.name_lower }, function (err, p_found) {
         if (err) { return next(err); }
 
         if (p_found.length > 0) {
