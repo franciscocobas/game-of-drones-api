@@ -4,6 +4,7 @@ var Schema = mongoose.Schema;
 
 var PlayerSchema = new Schema({
   name: { type: String, require: true, max: 100 },
+  name_lower: {type: String, required: true, max: 100},
   won: { type: Number, require: true, min: 0 }
 });
 
