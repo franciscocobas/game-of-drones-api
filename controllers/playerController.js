@@ -73,18 +73,24 @@ exports.player_create_post = [
         }
       }, function (err, results) {
         if (err) { return next(err); }
-
-        for (let i = 0; i < results.moves.lenght; i++) {
-          if (player.move.indexOf(results.moves[i]._id) > -1) {
-            results.moves[i].checked = 'true';
-          }
-        }
         res.json({ result: 'error', error: errors, moves: results.moves, player: player })
       })
     } else {
-      player.save(function (err) {
+      Player.find({ name: req.body.name }, function (err, p_found) {
         if (err) { return next(err); }
-        res.json({ result: 'ok', url: player.url })
+
+        if (p_found) {
+
+          // If Player was found then retreive it
+          res.json({ result: 'ok', player: p_found, url: player.url })
+        } else {
+
+          // If Player wasn't found then save it
+          player.save(function (err) {
+            if (err) { return next(err); }
+            res.json({ result: 'ok', url: player.url })
+          })
+        }
       })
     }
   }
@@ -100,7 +106,7 @@ exports.player_delete = function (req, res, next) {
     Player.findByIdAndRemove(req.params.id, function deletePlayer(err, results) {
       if (err) { return next(err); }
       if (!results) {
-        res.json({ result: 'error', errors: [{msg: 'No Player with this ID was found'}] })
+        res.json({ result: 'error', errors: [{ msg: 'No Player with this ID was found' }] })
       }
       res.json({ result: 'ok' })
     })
